@@ -22,7 +22,7 @@ def main(train_path, eval_path, pred_path):
     model.fit(x_train, y_train)
 
     # Plot data and decision boundary
-    util.plot(x_train, y_train, model.theta, 'output/p01b_{}.png'.format(pred_path[-5]))
+    util.plot(x_train, y_train, model.theta, 'output/p01e_{}.png'.format(pred_path[-5]))
 
     # Save predict
     x_eval, y_eval = util.load_dataset(eval_path, add_intercept=True)
@@ -56,11 +56,11 @@ class LogisticRegression(LinearModel):
             theta_old = np.copy(self.theta)
             # Compute the derivative of the log-likelihood
             h = sigmoid(x @ self.theta)
-            gradient_l = x.T @ (y - h)
+            gradient_l = x.T @ (y - h) / m
 
             # Compute the Hessian matrix
 
-            H = (x.T * h * (1 - h)) @ x
+            H = 1/m * (x.T * h * (1 - h)) @ x
 
             self.theta += np.linalg.inv(H) @ gradient_l
 
