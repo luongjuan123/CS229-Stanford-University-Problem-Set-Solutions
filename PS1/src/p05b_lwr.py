@@ -13,7 +13,7 @@ def main(tau, train_path, eval_path):
         train_path: Path to CSV file containing dataset for training.
         eval_path: Path to CSV file containing dataset for evaluation.
     """
-    # Load training set
+    # Load training se t
     x_train, y_train = util.load_dataset(train_path, add_intercept=True)
 
     # *** START CODE HERE ***
