@@ -88,3 +88,4 @@ class GDA(LinearModel):
         # *** START CODE HERE ***
         return 1 / (1 + np.exp(-x.dot(self.theta)))
         # *** END CODE HERE
+
