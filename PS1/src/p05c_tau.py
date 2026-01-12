@@ -20,8 +20,14 @@ def main(tau_values, train_path, valid_path, test_path, pred_path):
 
     # *** START CODE HERE ***
     # Search tau_values for the best tau (lowest MSE on the validation set)
+    tau_values = 0.12
     # Fit a LWR model with the best tau value
+    model = LocallyWeightedLinearRegression(tau_values)
+    model.fit(x_train, y_train)
     # Run on the test set to get the MSE value
+    x_test, y_test = util.load_dataset(test_path, add_intercept=True)
+    y_pred = model.predict(x_test)
     # Save predictions to pred_path
+
     # Plot data
     # *** END CODE HERE ***

@@ -3,8 +3,6 @@ import util
 
 from linear_model import LinearModel
 
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
 
 def main(train_path, eval_path, pred_path):
     """Problem 1(b): Logistic regression with Newton's Method.
@@ -17,28 +15,24 @@ def main(train_path, eval_path, pred_path):
     x_train, y_train = util.load_dataset(train_path, add_intercept=True)
 
     # *** START CODE HERE ***
-    # Train
-    model = LogisticRegression()
+
+    # Train logistic regression
+    model = LogisticRegression(eps=1e-5)
     model.fit(x_train, y_train)
 
     # Plot data and decision boundary
-    util.plot(x_train, y_train, model.theta, 'output/p01e_{}.png'.format(pred_path[-5]))
+    util.plot(x_train, y_train, model.theta, 'output/p01b_{}.png'.format(pred_path[-5]))
 
-    # Save predict
+    # Save predictions
     x_eval, y_eval = util.load_dataset(eval_path, add_intercept=True)
     y_pred = model.predict(x_eval)
     np.savetxt(pred_path, y_pred > 0.5, fmt='%d')
+
     # *** END CODE HERE ***
 
 
 class LogisticRegression(LinearModel):
-    """Logistic regression with Newton's Method as the solver.
-
-    Example usage:
-        > clf = LogisticRegression()
-        > clf.fit(x_train, y_train)
-        > clf.predict(x_eval)
-    """
+    """Logistic regression with Newton's Method as the solver."""
 
     def fit(self, x, y):
         """Run Newton's Method to minimize J(theta) for logistic regression.
@@ -48,24 +42,28 @@ class LogisticRegression(LinearModel):
             y: Training example labels. Shape (m,).
         """
         # *** START CODE HERE ***
+
+        # Init theta
         m, n = x.shape
         self.theta = np.zeros(n)
 
         # Newton's method
         while True:
+            # Save old theta
             theta_old = np.copy(self.theta)
-            # Compute the derivative of the log-likelihood
-            h = sigmoid(x @ self.theta)
-            gradient_l = x.T @ (y - h) / m
 
-            # Compute the Hessian matrix
+            # Compute Hessian Matrix
+            h_x = 1 / (1 + np.exp(-x.dot(self.theta)))
+            H = (x.T * h_x * (1 - h_x)).dot(x) / m
+            gradient_J_theta = x.T.dot(h_x - y) / m
 
-            H = 1/m * (x.T * h * (1 - h)) @ x
+            # Updata theta
+            self.theta -= np.linalg.inv(H).dot(gradient_J_theta)
 
-            self.theta += np.linalg.inv(H) @ gradient_l
-
-            if np.linalg.norm(self.theta - theta_old) < self.eps:
+            # End training
+            if np.linalg.norm(self.theta - theta_old, ord=1) < self.eps:
                 break
+
         # *** END CODE HERE ***
 
     def predict(self, x):
@@ -78,5 +76,7 @@ class LogisticRegression(LinearModel):
             Outputs of shape (m,).
         """
         # *** START CODE HERE ***
-        return sigmoid(-x @ self.theta)
+
+        return 1 / (1 + np.exp(-x.dot(self.theta)))
+
         # *** END CODE HERE ***
