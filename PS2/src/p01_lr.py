@@ -20,13 +20,13 @@ def logistic_regression(X, Y):
     m, n = X.shape
     theta = np.zeros(n)
     learning_rate = 10
-
     i = 0
     while True:
         i += 1
         prev_theta = theta
         grad = calc_grad(X, Y, theta)
         theta = theta - learning_rate * grad
+        learning_rate = learning_rate * 1/i
         if i % 10000 == 0:
             print('Finished %d iterations' % i)
         if np.linalg.norm(prev_theta - theta) < 1e-15:
