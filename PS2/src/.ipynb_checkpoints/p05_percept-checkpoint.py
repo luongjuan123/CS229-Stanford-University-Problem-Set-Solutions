@@ -16,7 +16,10 @@ def initial_state():
     """
 
     # *** START CODE HERE ***
+<<<<<<< HEAD
     return []
+=======
+>>>>>>> 30ff2ad (add)
     # *** END CODE HERE ***
 
 
@@ -34,10 +37,13 @@ def predict(state, kernel, x_i):
         Returns the prediction (i.e 0 or 1)
     """
     # *** START CODE HERE ***
+<<<<<<< HEAD
     sum_ = 0
     for beta, x in state:
         sum_ += beta*kernel(x, x_i)
     return sign(sum_)
+=======
+>>>>>>> 30ff2ad (add)
     # *** END CODE HERE ***
 
 
@@ -52,8 +58,11 @@ def update_state(state, kernel, learning_rate, x_i, y_i):
         y_i: A 0 or 1 indicating the label for a single instance
     """
     # *** START CODE HERE ***
+<<<<<<< HEAD
     beta = learning_rate * (y_i - predict(state, kernel, x_i))
     state.append((beta, x_i))
+=======
+>>>>>>> 30ff2ad (add)
     # *** END CODE HERE ***
 
 
