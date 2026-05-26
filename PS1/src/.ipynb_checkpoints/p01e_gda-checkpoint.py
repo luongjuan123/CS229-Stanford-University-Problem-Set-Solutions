@@ -12,9 +12,6 @@ def main(train_path, eval_path, pred_path):
         eval_path: Path to CSV file containing dataset for evaluation.
         pred_path: Path to save predictions.
     """
-
-    # *** START CODE HERE ***
-    
     # Load dataset
     x_train, y_train = util.load_dataset(train_path, add_intercept=False)
     # Train GDA
@@ -28,7 +25,10 @@ def main(train_path, eval_path, pred_path):
     x_eval, y_eval = util.load_dataset(eval_path, add_intercept=True)
     y_pred = model.predict(x_eval)
     np.savetxt(pred_path, y_pred > 0.5, fmt='%d')
-    
+
+    # *** END CODE HERE ***
+
+    # *** START CODE HERE ***
     # *** END CODE HERE ***
 
 
