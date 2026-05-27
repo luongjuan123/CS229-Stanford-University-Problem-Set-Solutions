@@ -17,15 +17,21 @@ def main(tau, train_path, eval_path):
     x_train, y_train = util.load_dataset(train_path, add_intercept=True)
 
     # *** START CODE HERE ***
+    # Fit a LWR model
 
-    model = LocallyWeightedLinearRegression(tau=tau)
+    model = LocallyWeightedLinearRegression(tau = tau)
+
     model.fit(x_train, y_train)
 
-    x_eval, y_eval = util.load_dataset(eval_path, add_intercept=True)
+    x_eval, y_eval = util.load_dataset(eval_path, add_intercept = True)
+
     y_pred = model.predict(x_eval)
 
+    # Get MSE value on the validation set
+
     mse = np.mean((y_pred - y_eval) ** 2)
-    print(f'MSE={mse}')
+
+    print(mse)
 
     plt.figure()
     plt.plot(x_train, y_train, 'bx', linewidth=2)
@@ -33,7 +39,9 @@ def main(tau, train_path, eval_path):
     plt.xlabel('x')
     plt.ylabel('y')
     plt.savefig('output/p05b.png')
-
+    # Plot validation predictions on top of training set
+    # No need to save predictions
+    # Plot data
     # *** END CODE HERE ***
 
 
@@ -57,7 +65,6 @@ class LocallyWeightedLinearRegression(LinearModel):
 
         """
         # *** START CODE HERE ***
-
         self.x = x
         self.y = y
         # *** END CODE HERE ***
@@ -73,19 +80,18 @@ class LocallyWeightedLinearRegression(LinearModel):
         """
         # *** START CODE HERE ***
         m, n = x.shape
-        y_pred = np.zeros(m)
 
-        for i in range(m):
-            # compute weights for each training point relative to query x[i]
+        self.theta = np.zeros(n)
+
+        for i in range(m) :
+        
             W = np.diag(np.exp(-np.sum((self.x - self.x[i]) ** 2, axis=1) / (2 * self.tau ** 2)))
+
+            theta_old = np.copy(self.theta)
 
             # compute theta = (X^T W X)^(-1) X^T W y
             self.theta = np.linalg.inv(self.x.T @ W @ self.x) @ (self.x.T @ W @ self.y)
 
-            # predict y_hat = x_i^T theta
-            y_pred[i] = x[i] @ self.theta
-
-        return y_pred
-
-
+        return x @ self.theta
+            
         # *** END CODE HERE ***
