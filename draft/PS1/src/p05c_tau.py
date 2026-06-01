@@ -19,6 +19,52 @@ def main(tau_values, train_path, valid_path, test_path, pred_path):
     x_train, y_train = util.load_dataset(train_path, add_intercept=True)
 
     # *** START CODE HERE ***
+
+    x_eval, y_eval = util.load_dataset(valid_path, add_intercept=True)
+
+    best_tau = None 
+
+    mse = []
+
+    for tau in tau_values:
+
+        model = LocallyWeightedLinearRegression(tau=tau)
+
+        model.fit(x_train, y_train)
+
+        y_pred = model.predict(x_eval)
+
+        c_mse = np.mean((y_pred - y_eval)**2)
+
+        mse.append(c_mse)
+
+        print(f'At tau = {tau}, mse = {c_mse}')
+
+    best_tau = tau_values[np.argmin(mse)]
+
+    model = LocallyWeightedLinearRegression(tau=best_tau)
+
+    model.fit(x_train, y_train)
+
+    x_test, y_test = util.load_dataset(test_path, add_intercept=True)
+
+    y_pred = model.predict(x_test)
+
+    mse = np.mean((y_pred - y_test)**2)
+
+    print(f'model trained with tau = {best_tau}, mse = {mse} ')    
+
+    np.savetxt(pred_path, y_pred)
+
+    plt.figure()
+
+    plt.plot(x_train, y_train, 'bx', linewidth=2)
+    
+    plt.plot(x_test, y_test, 'ro', linewidth=2)
+
+    plt.savefig('output/p05c_tau.png')
+
+
     # Search tau_values for the best tau (lowest MSE on the validation set)
     # Fit a LWR model with the best tau value
     # Run on the test set to get the MSE value
